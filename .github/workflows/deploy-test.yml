@@ -1,0 +1,56 @@
+name: Deploy Test Safe Web Core 
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rlespinasse/github-slug-action@v4
+      - name: Rancher Deploy Blue
+        uses: LATOKEN/actions-rancher-update@1.1.6
+        with:
+          rancher_url: ${{ secrets.TEST_RANCHER_URL_API }}
+          rancher_access: ${{ secrets.TEST_RANCHER_ACCESS_KEY}}
+          rancher_key: ${{ secrets.TEST_RANCHER_SECRET_KEY }}
+          project_id: 1a1768
+          stack_name: test-lachain-landing
+          service_name: safe-web-core-blue
+          docker_image: ghcr.io/${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_REF_SLUG_URL }}
+          pull: true
+          retry: 190
+          timeout: 1
+      - name: Rancher Deploy Green
+        uses: LATOKEN/actions-rancher-update@1.1.6
+        with:
+          rancher_url: ${{ secrets.TEST_RANCHER_URL_API }}
+          rancher_access: ${{ secrets.TEST_RANCHER_ACCESS_KEY}}
+          rancher_key: ${{ secrets.TEST_RANCHER_SECRET_KEY }}
+          project_id: 1a1768
+          stack_name: test-lachain-landing
+          service_name: safe-web-core-green
+          docker_image: ghcr.io/${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_REF_SLUG_URL }}
+          pull: true
+          retry: 190
+          timeout: 1
+      - name: Send release message to slack chat
+        id: slack
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "text": "New release safe-web-core:${{ github.ref_name }} deployed by ${{ github.actor }} to ${{ secrets.TEST_SAFE_WEB_URL }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "New release safe-web-core:${{ github.ref_name }} deployed by ${{ github.actor }} to ${{ secrets.TEST_SAFE_WEB_URL }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.TEST_SAFE_WEB_SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
