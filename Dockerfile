@@ -3,7 +3,7 @@ FROM node:18 as build
 WORKDIR /app/frontend
 COPY . .
 #ENV IS_PRODUCTION=true
-ENV NODE_ENV=production
+#ENV NODE_ENV=production
 ENV GATEWAY_URL_PRODUCTION=https://safe-config.lachain.net
 ENV GATEWAY_URL_STAGING=https://safe-config.lachain.net
 RUN yarn install --immutable
