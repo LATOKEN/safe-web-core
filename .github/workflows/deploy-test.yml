@@ -34,23 +34,4 @@ jobs:
           pull: true
           retry: 190
           timeout: 1
-      - name: Send release message to slack chat
-        id: slack
-        uses: slackapi/slack-github-action@v1.18.0
-        with:
-          payload: |
-            {
-              "text": "New release safe-web-core:${{ github.ref_name }} deployed by ${{ github.actor }} to ${{ secrets.TEST_SAFE_WEB_URL }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "New release safe-web-core:${{ github.ref_name }} deployed by ${{ github.actor }} to ${{ secrets.TEST_SAFE_WEB_URL }}"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.TEST_SAFE_WEB_SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
