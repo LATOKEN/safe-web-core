@@ -4,8 +4,8 @@ WORKDIR /app/frontend
 COPY . .
 ENV IS_PRODUCTION=true
 ENV NODE_ENV=production
-ENV GATEWAY_URL_PRODUCTION=https://safe-config.lachain.net
-ENV GATEWAY_URL_STAGING=https://safe-config.lachain.net
+ENV GATEWAY_URL_PRODUCTION=https://safe-client.lachain.net
+ENV GATEWAY_URL_STAGING=https://safe-client.lachain.net
 RUN yarn install --immutable
 RUN sed -i -e '/networkAddresses/a "226": "0x0b9F945174E1b340B87f228FCeeF4269AE7f559c",' node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/compatibility_fallback_handler.json
 RUN sed -i -e '/networkAddresses/a "226": "0x1111111111111111111111111111111111111111",' node_modules/@gnosis.pm/safe-deployments/dist/assets/v1.3.0/create_call.json
